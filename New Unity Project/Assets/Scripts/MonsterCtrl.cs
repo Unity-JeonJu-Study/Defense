@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class MonsterCtrl : MonoBehaviour
 { 
-   Transform tr;
+    Transform tr;
+    public int hp = 100;
 
    private void Awake()
    {

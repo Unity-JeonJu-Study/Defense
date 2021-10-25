@@ -20,14 +20,11 @@ public class BulletControlller : MonoBehaviour
     {
         if (transform.position.y > 0 && !once)
         {
-            Debug.Log(transform.position.y);
-            if (force > 0)
-                force *= -1;
+            force = force > 0 ? -force : force;
             once = true;
         }
         else if (transform.position.y < 0 && !once)
         {
-            Debug.Log(transform.position.y);
             force = Mathf.Abs(force);
             once = true;
         }
@@ -44,7 +41,10 @@ public class BulletControlller : MonoBehaviour
     {
         if (collision.CompareTag("Monster"))
         {
-            
+            MonsterCtrl monster = collision.GetComponent<MonsterCtrl>();
+            monster.hp -= damage;
+            if (monster.hp <= 0)
+                collision.gameObject.SetActive(false);
             Spawner.Instance.Despawn(this.gameObject);
         }
     }
