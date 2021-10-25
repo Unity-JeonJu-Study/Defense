@@ -13,10 +13,16 @@ public enum MonsterType
     Devil
 }
 
+public enum PoolType
+{
+    Monster,
+    Bullet
+}
+
 public class Spawner : MonoBehaviour
 {
     public static Spawner Instance;
-    public List<GameObject> poolPrefabsMob;
+    public List<GameObject> poolPrefabs;
 
     public MSerializableDictionary<string, Queue<GameObject>> poolQueues =
         new MSerializableDictionary<string, Queue<GameObject>>();
@@ -25,19 +31,35 @@ public class Spawner : MonoBehaviour
 
     private void Start()
     {
-        foreach (var poolPrefab in poolPrefabsMob)
+        foreach (var poolPrefab in poolPrefabs)
         {
-            InitPool(poolPrefab, 5);
+            
+            InitPool(poolPrefab, poolPrefab.name);
         }
     }
 
-    public void InitPool(GameObject poolPrefab, int initCount)
+    public void InitPool(GameObject poolPrefab, string name)
     {
+        int initCount = 0;
         if (!poolQueues.ContainsKey(poolPrefab.name))
             poolQueues.Add(poolPrefab.name, new Queue<GameObject>());
 
-        for (int i = 0; i < initCount; i++)
+        switch (name)
         {
+            case "Ghost2":
+                initCount = 6;
+                break;
+            case "Bullet":
+                initCount = 5;
+                break;
+            default:
+                initCount = 3;
+                break;
+
+        }
+            for (int i = 0; i < initCount; i++)
+        {
+
             GameObject go = Instantiate(poolPrefab, this.transform);
             poolQueues[poolPrefab.name].Enqueue(go);
             go.SetActive(false);
@@ -48,7 +70,7 @@ public class Spawner : MonoBehaviour
     {
         if (!poolQueues.ContainsKey(key) || poolQueues[key].Count <= 0)
         {
-            InitPool(poolPrefabsMob.Find(x => x.name == key), 3);
+            InitPool(poolPrefabs.Find(x => x.name == key), "a");
         }
 
         GameObject go = poolQueues[key].Dequeue();

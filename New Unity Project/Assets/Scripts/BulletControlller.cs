@@ -8,14 +8,11 @@ public class BulletControlller : MonoBehaviour
 
     public float force = 200f;
 
-    private void Awake()    
+    private void OnEnable()
     {
+        Debug.Log(transform.position.y);
         if (transform.position.y > 0)
             force *= -1;
-    }
-
-    private void Start()
-    {
         StartCoroutine(DestroyBullet());
     }
 
@@ -26,16 +23,17 @@ public class BulletControlller : MonoBehaviour
 
     private IEnumerator DestroyBullet()
     {
-        yield return new WaitForSeconds(5f);
-        Destroy(this.gameObject);
+        yield return new WaitForSeconds(1f);
+        var spawner = Spawner.Instance;
+        spawner.Despawn(this.gameObject);
+        force *= -1;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Monster"))
         {
-            MonsterController mc = collision.GetComponent<MonsterController>();
-            mc.hp -= damage;
-            Debug.Log(mc.hp);
+            
+            Spawner.Instance.Despawn(this.gameObject);
         }
     }
 }

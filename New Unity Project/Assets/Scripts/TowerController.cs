@@ -5,6 +5,7 @@ using UnityEngine;
 public class TowerController : MonoBehaviour
 {
     public GameObject bullet;
+    public float timeOffSet = 1f;
 
     private void Start()
     {
@@ -20,10 +21,10 @@ public class TowerController : MonoBehaviour
     {
         while(true)
         {
-            Instantiate(bullet, transform.position,
-                    transform.rotation);
-            
-            yield return new WaitForSeconds(3f);
+            var spawner = Spawner.Instance;
+            GameObject a = spawner.Spawn("Bullet");
+            a.transform.position = this.transform.position;
+            yield return new WaitForSeconds(timeOffSet);
         }
         
     }
