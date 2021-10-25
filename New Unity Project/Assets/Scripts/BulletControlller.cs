@@ -7,17 +7,30 @@ public class BulletControlller : MonoBehaviour
     public int damage = 10;
 
     public float force = 200f;
-
+    public bool once;
     private void OnEnable()
     {
-        Debug.Log(transform.position.y);
-        if (transform.position.y > 0)
-            force *= -1;
+        
         StartCoroutine(DestroyBullet());
+
+        once = false;
     }
 
     private void Update()
     {
+        if (transform.position.y > 0 && !once)
+        {
+            Debug.Log(transform.position.y);
+            if (force > 0)
+                force *= -1;
+            once = true;
+        }
+        else if (transform.position.y < 0 && !once)
+        {
+            Debug.Log(transform.position.y);
+            force = Mathf.Abs(force);
+            once = true;
+        }
         transform.position += new Vector3(0, force * Time.deltaTime, 0);
     }
 
@@ -26,7 +39,6 @@ public class BulletControlller : MonoBehaviour
         yield return new WaitForSeconds(1f);
         var spawner = Spawner.Instance;
         spawner.Despawn(this.gameObject);
-        force *= -1;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
